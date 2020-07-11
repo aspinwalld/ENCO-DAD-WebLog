@@ -1,2 +1,5 @@
 # ENCO DAD WebLog
- HTML VT Shift Playlist Generator
+
+####Generate a HTML formatted playlist for a remote jock's VT shift.
+
+More documentation coming soon.
