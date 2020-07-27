@@ -1,5 +1,5 @@
-# ENCO DAD WebLog
+# WebLog for ENCO DAD
 
-#### Generate a HTML formatted playlist for a remote jock's VT shift.
+#### WebLog generates a HTML file based on an ENCO .REP file and uploads the html file via ftp.
 
-More documentation coming soon.
+In progress. Documentation coming once more progress has been made...
