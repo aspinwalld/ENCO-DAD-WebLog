@@ -1,0 +1,25 @@
+{define_begin}
+1 :PLAYLIST->TIME
+2 :CUTS->TITLE
+3 :CUTS->ARTIST
+4 :CUTS->ENDTALK ":%S"
+5 :CUTS->LENGTH "%M:%S"
+{define_end}
+
+{relation_begin}
+PLAYLIST->CUT->N->1 CUTS->CUT
+{relation_end}
+
+{pagesize} 2000
+
+{group_begin}
+PLAYLIST->CUT
+{group_end}
+
+{page_header_begin}
+[v1    ],%,[v1    ],%,[v1    ],%,[v1    ],%,[v1    ]
+{header_end}
+
+{header_begin}
+[d1    ],%,[d2                            ],%,[d3                            ],%,[d4    ],%,[d5    ]
+{header_end}
