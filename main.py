@@ -56,7 +56,7 @@ except:
 
 # Read DCL command string from config.ini
 try:
-    dcl_command = ini['NETWORK']['DCLCommand']
+    dcl_command = ini['NETWORK']['DCL_Command']
     log.debug(f'DCL command string, {dcl_command}, read from config.')
 except:
     log.error('Error reading DCL command string from config. Using WebLog default; MAKELOG+HTML.')
@@ -121,14 +121,21 @@ except:
     delimeter = ',%,'
     log.error('Error reading input file delimeter from config. Using WebLog default of ,%,')
 
-# Read selected playlist hours from config.ini and create a list of all selected hours
+# Read selected playlist hours from config.ini
 try:
     hours_string = ini['PLAYLIST']['Hours']
     log.debug(f'Playlist hour string, {hours_string}, read from config.')
-    hours = hours_string.split(',')
 except:
     hours = []
     log.error('Error reading selected hours from config. Unselecting all hours.')
+
+# Create a list of hours from string gathered above
+try:
+    hours = hours_string.split(',')
+    log.debug(f'Hours configured are {hours}.')
+except:
+    hours = []
+    log.error(f'Error parsing hour CSV from string {hours_string}.')
 
 # Read selected highlight keyword from config.ini
 try:
@@ -165,6 +172,8 @@ except:
     highlight_color = '000000'
     log.error('Error reading highlight color from config. Using black.')
 
+if highlight_color[0] == '#':
+    highlight_color = highlight_color[1:] # Strip '#' from color hex if user has it in config.ini
 
 
 def GetPlaylist(output, lines, *args, **kwargs):
@@ -230,7 +239,7 @@ def generate_log():
     <!DOCTYPE HTML>
     <html>
     <head>
-     <title>{title}}</title>
+     <title>{title}</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
@@ -264,18 +273,14 @@ def generate_log():
       </thead>
       <tbody>""")
 
-    t0 = '1'
-    t1 = '0'
-    GetHour(output, lines, t0, t1)
-
-    t1 = '1'
-    GetHour(output, lines, t0, t1)
-
-    t1 = '2'
-    GetHour(output, lines, t0, t1)
-
-    t1 = '3'
-    GetHour(output, lines, t0, t1)
+    for hour in hours:
+        t0 = hour[0]
+        try:
+            t1 = hour[1]
+        except:
+            log.error(f'Error parsing hour, {hour}. All hours must be in two digit format.')
+            continue
+        GetHour(output, lines, t0, t1)
 
     output.write("""
           </tbody>
@@ -291,18 +296,18 @@ def generate_log():
     """)
     output.close()
 
-    print('HTML WebLog Generated.')
+    log.info('HTML WebLog Generated Successfully.')
     if ftp_enabled:
         upload_log()
 
 
 def upload_log():
-    print(f'Uploading WebLog to {ftp_host}')
+    log.info(f'Uploading WebLog to {ftp_host}')
     ftp = ftplib.FTP(ftp_host, ftp_user, ftp_password)
     ftp.encoding = 'utf-8'
     with open(output_file, 'rb') as file:
         ftp.storbinary(f'STOR {output_file}', file)
-    print('HTML WebLog Uploaded Successfully.')
+    log.info('HTML WebLog Uploaded Successfully.')
 
 
 while True:
@@ -311,22 +316,22 @@ while True:
         s.bind((ip, port))
 
         while True:
-            print(f'Listening for DCLs on {ip}:{port}')
+            log.info(f'Listening for DCLs on {ip}:{port}')
             data, address = s.recvfrom(4096)
             dcl = data.decode('utf-8')
             dcl = dcl.upper().strip()
-            dcl = dcl[:-1] # Strip garbage character from end of DCL
-            print(f'Received DCL: {dcl} from {address}')
+            dcl = dcl[:-1] # Strip garbage character from end of ENCO DCL
+            log.debug(f'Received DCL: {dcl} from {address}')
             if not data:
                 break
             
             if dcl == dcl_command:
-                print('GENERATING WEBLOG...')
+                log.info('HTML WebLog Generation DCL Received. Generating WebLog...')
                 generate_log()
             else:
-                print(f'Invalid DCL Command sent to WebLog. Ignoring it...')
+                log.debug(f'Invalid DCL Command sent to WebLog. Ignoring it...')
                 break
     except:
-        print('An error has occurred. Attempting to recover...')
+        log.info('An error has occurred. Attempting to recover...')
         time.sleep(10)
         break

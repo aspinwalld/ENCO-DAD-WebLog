@@ -6,7 +6,7 @@
 
 Various WebLog settings can be controlled through a *config.ini* file associated with WebLog.
 
-#### NETWORK
+### NETWORK
 
 WebLog can be triggered via ENCO DCL Commands.
 
@@ -14,7 +14,7 @@ WebLog can be triggered via ENCO DCL Commands.
 
 **Port**: The UDP port for listening for incoming DCLs from the ENCO system. ENCO uses UDP port 2002 for DCL commands, and this port should not be changed under normal circumstances.
 
-#### FTP_UPLOAD
+### FTP_UPLOAD
 
 WebLog can automatically upload the generated HTML file to a FTP server.
 
@@ -24,7 +24,7 @@ WebLog can automatically upload the generated HTML file to a FTP server.
 
 **Password**: Password credential for FTP server.
 
-#### PLAYLIST
+### PLAYLIST
 
 **Input**: Path to the PLIST.REP or PLIST2.REP report files on the ENCO. (Note these files must be formatted as notated in the *Playlist Report Formatting* section).
 
