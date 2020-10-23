@@ -18,8 +18,36 @@ ini = ConfigParser()
 try:
     ini.read('config.ini')
 except:
-    log.critical('Error finding configuration file. Exiting...')
+    print('Error finding configuration file. Exiting...') # Logging not configured yet, so print...
     exit()
+
+# Read logging state from config.ini
+try:
+    logging_enabled = ini.getboolean('LOGGING', 'Enable')
+except:
+    logging_enabled = False
+
+if logging_enabled:
+    file_logger = logging.FileHandler('debugger.log')
+    file_logger.setFormatter(log_format)
+    log.addHandler(file_logger)
+
+# Read log level from config.ini
+try:
+    log_level = ini['LOGGING']['Level']
+    log_level = log_level.upper() # Make sure upper case for string matching below
+    if log_level == 'INFO':
+        log.setLevel(logging.INFO)
+    elif log_level == 'WARN':
+        log.setLevel(logging.WARN)
+    elif log_level == 'ERROR':
+        log.setLevel(logging.ERROR)
+    elif log_level == 'DEBUG':
+        log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO) # Catch all - set log to info
+except:
+    log.setLevel(logging.INFO) # Set log level to info if config read failure
 
 # Read/Validate ip from config.ini
 try:
@@ -167,13 +195,12 @@ except:
 # Read highlight color for highlight keyword from config
 try:
     highlight_color = ini['FORMATTING']['HighlightColor']
+    if highlight_color[0] == '#':
+        highlight_color = highlight_color[1:] # Strip '#' from color hex if user has it in config.ini
     log.debug(f'Read highlight color, {highlight_color}, from config.')
 except:
     highlight_color = '000000'
     log.error('Error reading highlight color from config. Using black.')
-
-if highlight_color[0] == '#':
-    highlight_color = highlight_color[1:] # Strip '#' from color hex if user has it in config.ini
 
 
 def GetPlaylist(output, lines, *args, **kwargs):
