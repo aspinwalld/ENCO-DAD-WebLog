@@ -2,6 +2,11 @@
 
 #### WebLog generates a HTML file based on an ENCO .REP file and uploads the html file via ftp.
 
+## *Upcoming Development Changes*
+
+Currently, WebLog only supports generating a single playlist through the settings specified in config.ini. In a future release, it will be possible
+to generate multiple playlists all using their own parameters. They will be able to be triggered via their own DCL commands specified per playlist.
+
 ## Configuration
 
 Various WebLog settings can be controlled through a *config.ini* file associated with WebLog.
@@ -14,7 +19,7 @@ WebLog can be triggered via ENCO DCL Commands.
 
 **Port**: The UDP port for listening for incoming DCLs from the ENCO system. ENCO uses UDP port 2002 for DCL commands, and this port should not be changed under normal circumstances.
 
-### FTP_UPLOAD
+### FTP
 
 WebLog can automatically upload the generated HTML file to a FTP server.
 

@@ -1,4 +1,4 @@
-#List2Web HTML Playlist Generator for ENCO DAD
+# WebLog HTML Playlist Generator for ENCO DAD
 
 import ftplib
 import socket
@@ -281,6 +281,7 @@ def generate_log():
       <div class="col-md-2"></div>
       <div class="col-md-8">
        <div class="well">
+        <h2 style="text-align:center">{title_text}</h2>
         <h3 style="text-align:center">{subtitle_text}</h3>
     """)
 
@@ -313,7 +314,7 @@ def generate_log():
           </tbody>
         </table>
         <div class="footer">
-          <h6 style="text-align:center">Created using List2Web for ENCO DAD by D.I. Aspinwall</h6>
+          <h6 style="text-align:center">Created using WebLog for ENCO DAD by D.I. Aspinwall</h6>
         </div>
         </div>
           <div class="col-md-2"></div>
